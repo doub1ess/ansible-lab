@@ -1,0 +1,7 @@
+---
+
+# Настройки только для pi1
+nginx_port: 80
+nginx_root: /var/www/p1
+nginx_server_name: pi1.local
+nginx_index: index.html index.htm

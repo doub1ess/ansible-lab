@@ -1,0 +1,32 @@
+---
+- name: Install Nginx on pi2
+  hosts: ap
+  become: yes
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx package
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Start and enable Nginx service
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Copy custom index.html
+      copy:
+        content: "<h1>Hello from Ansible! Host: {{ inventory_hostname }}</h1>"
+        dest: /var/www/html/index.html
+        mode: '0644'
+      notify: Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      systemd:
+        name: nginx
+        state: restarted

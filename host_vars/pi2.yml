@@ -1,0 +1,7 @@
+---
+
+# Настройки только для pi2
+nginx_port: 8080
+nginx_root: /var/www/pi2
+nginx_server_name: pi2.local
+nginx_index: index.html index.htm

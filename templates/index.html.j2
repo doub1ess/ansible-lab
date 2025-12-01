@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ inventory_hostname }} - Ansible Nginx</title>
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 100px; background: #f0f8ff; }
+        h1 { color: #2c3e50; }
+        .info { margin: 20px; padding: 20px; background: white; border-radius: 10px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h1>🎉 Hello from {{ inventory_hostname }}!</h1>
+        <p><strong>Port:</strong> {{ nginx_port }}</p>
+        <p><strong>Root:</strong> {{ nginx_root }}</p>
+        <p><strong>OS:</strong> {{ ansible_distribution }} {{ ansible_distribution_version }}</p>
+        <p><strong>Uptime:</strong> {{ ansible_uptime_seconds }} seconds</p>
+    </div>
+</body>
+</html>

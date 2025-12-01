@@ -1,0 +1,81 @@
+---
+- name: Deploy Advanced Nginx with Jinja2
+  hosts: ap
+  become: yes
+  vars:
+    nginx_config_dir: /etc/nginx/sites-available
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Create web roots
+      file:
+        path: "{{ nginx_root }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ nginx_user }}"
+        group: "{{ nginx_user }}"
+
+    - name: Deploy custom index.html
+      template:
+        src: index.html.j2
+        dest: "{{ nginx_root }}/index.html"
+        mode: '0644'
+        owner: "{{ nginx_user }}"
+        group: "{{ nginx_user }}"
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Deploy nginx site config from template
+      template:
+        src: nginx-site.j2
+        dest: "{{ nginx_config_dir }}/{{ inventory_hostname }}"
+        mode: '0644'
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Enable site (symlink)
+      file:
+        src: "{{ nginx_config_dir }}/{{ inventory_hostname }}"
+        dest: /etc/nginx/sites-enabled/{{ inventory_hostname }}
+        state: link
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Disable default site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify:
+        - Test nginx config
+        - Restart nginx
+
+    - name: Start and enable nginx
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Test nginx config
+      systemd:
+        name: nginx
+        state: started
+      check_mode: yes
+
+    - name: Restart nginx
+      systemd:
+        name: nginx
+        state: restarted
+
