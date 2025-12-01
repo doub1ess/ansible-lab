@@ -12,23 +12,7 @@
     pi2 (Orange Pi Lite): Одноплатный компьютер, Tailscale IP 100.74.146.7
 
 Доступ к хостам предоставлен через сервис dwservice.
-Структура проекта
 
-text
-malina_ansible/
-├── ansible.cfg                 # Конфигурация Ansible
-├── inventory.ini              # Описание хостов и групп
-├── nginx-server-pi2.yml       # Простой плейбук для установки Nginx
-├── nginx-advanced.yml         # Продвинутый плейбук с Jinja2
-├── group_vars/
-│   └── servers.yml            # Общие переменные для всех серверов
-├── host_vars/
-│   ├── pi1.yml                # Переменные для Raspberry Pi
-│   └── pi2.yml                # Переменные для Orange Pi Lite
-├── templates/
-│   ├── nginx-site.j2          # Шаблон конфигурации Nginx
-│   └── index.html.j2          # Шаблон главной страницы
-└── README.md                  # Этот файл
 
 Установка и использование
 Требования
