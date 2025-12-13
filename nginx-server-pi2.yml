@@ -16,7 +16,7 @@
       systemd:
         name: nginx
         state: started
-        enabled: yes
+        enabled: no
 
     - name: Copy custom index.html
       copy:

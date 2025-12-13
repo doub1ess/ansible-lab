@@ -1,0 +1,68 @@
+---
+- name: Update package cache
+  ansible.builtin.package:
+    update_cache: yes
+  become: yes
+
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  become: yes
+
+- name: Create web roots
+  ansible.builtin.file:
+    path: "{{ nginx_root }}"
+    state: directory
+    mode: '0755'
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+  become: yes
+
+- name: Deploy custom index.html
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ nginx_root }}/index.html"
+    mode: '0644'
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+  notify:
+    - Test nginx config
+    - Restart nginx
+  become: yes
+
+- name: Deploy nginx site config from template
+  ansible.builtin.template:
+    src: nginx-site.j2
+    dest: "{{ nginx_config_dir }}/{{ inventory_hostname }}"
+    mode: '0644'
+  notify:
+    - Test nginx config
+    - Restart nginx
+  become: yes
+
+- name: Enable site (symlink)
+  ansible.builtin.file:
+    src: "{{ nginx_config_dir }}/{{ inventory_hostname }}"
+    dest: "/etc/nginx/sites-enabled/{{ inventory_hostname }}"
+    state: link
+  notify:
+    - Test nginx config
+    - Restart nginx
+  become: yes
+
+- name: Disable default site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - Test nginx config
+    - Restart nginx
+  become: yes
+
+- name: Ensure nginx is started (without autostart)
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: no
+  become: yes

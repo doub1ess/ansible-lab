@@ -1,0 +1,10 @@
+---
+- name: Test nginx config
+  ansible.builtin.command: nginx -t
+  become: yes
+
+- name: Restart nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+  become: yes

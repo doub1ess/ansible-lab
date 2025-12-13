@@ -1,0 +1,4 @@
+---
+nginx_user: www-data
+nginx_root: /var/www/pi2
+nginx_config_dir: /etc/nginx/sites-available
